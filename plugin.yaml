@@ -1,0 +1,10 @@
+name: "ssh"
+description: "Blink SSH plugin"
+tags:
+  - ssh
+  - linux
+
+provider: "blink"
+connection_types:
+  ssh:
+    reference: ssh

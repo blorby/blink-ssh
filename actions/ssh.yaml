@@ -1,0 +1,24 @@
+# Describes the action and it's parameters
+name: "execute"
+description: "Executes an SSH command against a remote host"
+enabled: true
+parameters:
+  host:
+    type: "string"
+    description: "The host to connect to, can be ip address or hostname"
+    required: true
+  port:
+    type: "int"
+    description: "The ssh port"
+    default: "22"
+    required: false
+  command:
+    type: "code:bash"
+    description: "The commands to run"
+    default: ""
+    required: true
+  timeout:
+    type: "int"
+    description: "Timeout in seconds for the command"
+    default: 60
+    required: false
