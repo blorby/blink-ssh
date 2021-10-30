@@ -6,9 +6,9 @@ import blink.jenkins.ci.*
 node ("ci") {
 
   def pipeline = new PluginPipeline(this)
-  pipeline.projectName = "blink-http"
+  pipeline.projectName = "blink-ssh"
   pipeline.mainBranchName = "master"
-  pipeline.dockerImageName = "blink-http"
+  pipeline.dockerImageName = "blink-ssh"
   pipeline.dockerRegistry = Constants.PUBLIC_DOCKER_REGISTRY
   pipeline.isMultiImage = false
   pipeline.runUnitTests = false
