@@ -7,7 +7,7 @@ import (
 	"github.com/blinkops/blink-sdk/plugin/actions"
 	"github.com/blinkops/blink-sdk/plugin/config"
 	"github.com/blinkops/blink-sdk/plugin/connections"
-	description2 "github.com/blinkops/blink-sdk/plugin/description"
+	"github.com/blinkops/blink-sdk/plugin/description"
 	log "github.com/sirupsen/logrus"
 	"path"
 	"strconv"
@@ -66,7 +66,7 @@ func (p *SSHPlugin) ExecuteAction(ctx *plugin.ActionContext, request *plugin.Exe
 	}, nil
 }
 
-func (p *SSHPlugin) TestCredentials(_ map[string]connections.ConnectionInstance) (*plugin.CredentialsValidationResponse, error) {
+func (p *SSHPlugin) TestCredentials(_ map[string]*connections.ConnectionInstance) (*plugin.CredentialsValidationResponse, error) {
 	return &plugin.CredentialsValidationResponse{
 		AreCredentialsValid:   true,
 		RawValidationResponse: []byte("credentials validation is not supported on this plugin :("),
@@ -77,7 +77,7 @@ func NewSSHPlugin(rootPluginDirectory string) (*SSHPlugin, error) {
 
 	pluginConfig := config.GetConfig()
 
-	description, err := description2.LoadPluginDescriptionFromDisk(path.Join(rootPluginDirectory, pluginConfig.Plugin.PluginDescriptionFilePath))
+	desc, err := description.LoadPluginDescriptionFromDisk(path.Join(rootPluginDirectory, pluginConfig.Plugin.PluginDescriptionFilePath))
 	if err != nil {
 		return nil, err
 	}
@@ -88,7 +88,7 @@ func NewSSHPlugin(rootPluginDirectory string) (*SSHPlugin, error) {
 	}
 
 	log.Infof("Loaded %d connections from disk", len(loadedConnections))
-	description.Connections = loadedConnections
+	desc.Connections = loadedConnections
 
 	actionsFromDisk, err := actions.LoadActionsFromDisk(path.Join(rootPluginDirectory, pluginConfig.Plugin.ActionsFolderPath))
 	if err != nil {
@@ -100,7 +100,7 @@ func NewSSHPlugin(rootPluginDirectory string) (*SSHPlugin, error) {
 	}
 
 	return &SSHPlugin{
-		description:      *description,
+		description:      *desc,
 		actions:          actionsFromDisk,
 		supportedActions: supportedActions,
 	}, nil
@@ -142,22 +142,22 @@ func executeSSH(ctx *plugin.ActionContext, request *plugin.ExecuteActionRequest)
 		return nil, errors.New("missing ssh connection")
 	}
 
-	key, ok := credentials["key"].(string)
+	key, ok := credentials["key"]
 	if !ok || key == "" {
 		return nil, errors.New("missing ssh key")
 	}
 
-	user, ok := credentials["username"].(string)
+	user, ok := credentials["username"]
 	if !ok || user == "" {
 		return nil, errors.New("missing ssh username")
 	}
 
-	passphrase, ok := credentials["passphrase"].(string)
+	passphrase, ok := credentials["passphrase"]
 	if !ok {
 		passphrase = ""
 	}
 
-	plugin := Plugin{
+	plug := Plugin{
 		Config: Config{
 			Key:        key,
 			Username:   user,
@@ -169,8 +169,8 @@ func executeSSH(ctx *plugin.ActionContext, request *plugin.ExecuteActionRequest)
 		},
 	}
 
-	log.Infof("About to do ssh call for the next command: %v", plugin.Config.Script)
-	output, err := plugin.Exec()
+	log.Infof("About to do ssh call for the next command: %v", plug.Config.Script)
+	output, err := plug.Exec()
 	log.Infof("Got response back, output: %v, err: %v", output, err)
 
 	return []byte(output), err
