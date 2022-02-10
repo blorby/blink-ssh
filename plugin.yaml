@@ -8,3 +8,4 @@ provider: "blink"
 connection_types:
   ssh:
     reference: ssh
+is_connection_optional: true

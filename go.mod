@@ -4,7 +4,7 @@ go 1.16
 
 require (
 	github.com/appleboy/easyssh-proxy v1.3.9
-	github.com/blinkops/blink-sdk v1.0.75
+	github.com/blinkops/blink-sdk v1.0.77
 	github.com/kr/pretty v0.1.0 // indirect
 	github.com/sirupsen/logrus v1.8.1
 	golang.org/x/sys v0.0.0-20210421221651-33663a62ff08 // indirect
