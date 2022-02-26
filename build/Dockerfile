@@ -10,7 +10,7 @@ COPY .. .
 
 RUN go build -tags netgo -ldflags '-w -extldflags "-static"' -o /go/bin/blink-ssh ./plugin.go
 
-FROM alpine:3.14.0 AS plugin
+FROM alpine:3.14.3 AS plugin
 
 WORKDIR /blink-http
 COPY --from=builder /go/bin/blink-ssh .
